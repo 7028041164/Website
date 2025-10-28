@@ -1,0 +1,1145 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Playonic</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />  
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>  
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
+      justify-content: center;
+      gap: 17px;
+      padding-top: 20px;
+    }
+
+    .game-card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #ccc;
+      font-size: 0.9em;
+      margin-top: 20px;
+    }
+
+    .poki-widget {
+      position: fixed;
+      top: 22px;
+      left: 15px;
+      background: white;
+      width: 100px;
+      height: 99px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      margin-left: 15px;
+      overflow: hidden;
+    }
+
+    .logo-part img {
+      width: 180px;
+      height: auto;
+      margin-bottom: 5px;
+      margin-left: 10px;
+    }
+
+    .horizontal-line {
+      width: 80%;
+      height: 1px;
+      background: #ccc;
+      margin: 0 auto 4px auto;
+    }
+
+    .icon-part {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      gap: 10px;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .icon-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+    }
+
+    .icon-box i {
+      font-size: 26px;
+      color: #4facfe;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .icon-box i:hover {
+      transform: scale(1.2);
+    }
+
+    .vertical-line {
+      width: 1px;
+      height: 30px;
+      background: #ccc;
+    }
+
+    /* Search Overlay */
+    .search-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      z-index: 2000;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background: white;
+      border-radius: 12px;
+      margin: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-btn {
+      background: white;
+      color: #00bfff;
+      font-size: 20px;
+      padding: 6px;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+.search-logo {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  object-fit: contain;
+  display: flex;
+  align-items: center;
+}
+    .vertical-line-bar {
+      width: 1px;
+      height: 20px;
+      background: #ccc;
+      margin: 0 10px;
+    }
+
+    .search-input {
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .search-icon {
+      color: #4facfe;
+      font-size: 20px;
+      margin-left: 10px;
+    }
+/*
+ @media screen and (max-width: 767px) {
+  .search-bar {
+    flex-wrap: nowrap;
+    padding: 10px 10px;
+  }*/
+
+.search-logo {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  object-fit: contain;
+  display: flex;
+  align-items: center;
+}
+
+  .vertical-line-bar {
+    display: block;
+    margin: 0 8px;
+    background: #ccc;
+    width: 1px;
+    height: 25px;
+  }
+
+  .search-input {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .search-icon {
+    margin-left: 10px;
+    font-size: 20px;
+    color: #4facfe;
+  }
+  
+  
+  
+  /* Horizontal scroll containers for search overlay sections */
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 8px 4px 16px 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-container::-webkit-scrollbar { height: 8px; }
+.scroll-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25);
+border-radius: 4px; }
+
+.scroll-container .game-card-inline { flex: 0 0 auto; 
+width: 110px; 
+text-align: center; }
+
+.scroll-container img { width: 110px; 
+height: 110px; 
+border-radius: 14px; 
+object-fit: cover; display: block;
+ 
+  
+}
+h3 { color: #fff; }
+  
+  
+  /* right side */  
+  .page-heading-box {  
+  margin-left: 150px; /* Widget ka width + spacing */  
+  margin-top: 3px;  
+  background: white;  
+  display: flex;  
+  padding: 10px 20px;  
+  border-radius: 16px;  
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);  
+  height: 80px;  
+  width: 180px;  
+  align-items: center;  
+  justify-content: center;  
+    
+}  
+  
+.page-heading-box p {  
+  margin: 0;  
+  font-size: 18px;  
+  font-weight: bold;  
+  color: #333;  
+  text-align: center;  
+    
+}  
+  
+  /* bada img */
+      .game-main-thumbnail {
+      width: 90%;
+      max-width: 500px;
+      margin: 20px auto 10px;
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow:none;
+    }
+    .game-main-thumbnail img {
+      width: 100%;
+      display: block;
+    }
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+ background: rgba(0,0,0,0.4); 
+  border-radius: 16px;
+  padding: 20px 30px;
+  cursor: pointer;
+  color: white;
+  text-align: center;
+  /* backdrop-filter: blur(4px); */
+}
+  
+  
+  
+  /* suggestion card */
+  
+  .suggested-section {
+  margin: 30px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  background: none;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.suggested-section h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #333;
+  text-align: left;
+}
+
+.suggested-games {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 40px
+}
+
+.suggested-games a img {
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.suggested-games a img:hover {
+  transform: scale(1.05);
+}
+
+/* Default: hide on mobile */
+/* Only for desktop screens */
+@media screen and (min-width: 768px) {
+  .desktop-banner-box {
+    margin-left: 145px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 8px 4px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: calc(100% - 160px);
+    max-width: 760px;
+    
+  }
+
+  .game-banner-left img {
+    width: 80px;
+    height: 80px;
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    margin-left: 4px;
+    
+  }
+
+  .game-banner-center {
+    flex-grow: 1;
+    margin-left: 15px;
+  }
+
+  .game-banner-center h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #1e3c72;
+  }
+
+  .game-banner-center p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #777;
+  }
+
+  .game-banner-right i {
+    font-size: 22px;
+    margin-left: 15px;
+    color: #4facfe;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .game-banner-right i:hover {
+    transform: scale(1.2);
+  }
+
+  /* Hide .page-heading-box */
+  .page-heading-box {
+    display: none;
+  }
+}
+
+/* Mobile: hide the banner */
+@media screen and (max-width: 767px) {
+  .desktop-banner-box {#42445A
+    display: none;
+  }
+}
+
+ @media screen and (max-width: 768px) {
+  .desktop-banner-box {
+    display: none !important;
+  }
+}
+
+ /* mobile */
+
+ .game-title-group {
+  text-align: center;
+}
+
+.game-title-group p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.game-dev-name {
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+  display: block;
+}
+
+/* white box */
+@media screen and (max-width: 767px) {
+  .page-heading-box {
+    margin-left: 150px;         /* Thoda right shift kar diya */
+    margin-top: 3px;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    height: 78px;
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* 👈 Center text horizontally */
+    justify-content: center;   /* 👈 Center text vertically */
+    text-align: center;        /* 👈 Center-align text */
+  }
+
+  .page-heading-box p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .game-dev-name {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+    display: block;
+  }
+}
+
+
+
+
+ /* white description box */
+  .description-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  margin: 40px auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  padding-top: 0px;
+  
+}
+
+.desc-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.desc-icon {
+  width: 40%;
+  height: 40%;
+  object-fit: cover;
+  border-radius: 7px;
+ /*  box-shadow: 0 2px 6px rgba(0,0,0,0.2);*/
+ 
+}
+
+.desc-title-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.desc-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  color: #222;
+}
+
+.desc-developer {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.desc-body p {
+  color: #333;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.desc-body ul {
+  padding-left: 20px;
+  color: #333;
+  margin-top: 10px;
+}
+
+.desc-body li {
+  margin-bottom: 8px;
+}
+ 
+ 
+  /* lp*/
+ 
+  </style>  
+</head>  
+<body>  
+    
+    
+ 
+  <!-- Search Overlay -->  
+  <div class="search-overlay" id="searchOverlay">  
+    <div class="search-bar">  
+      <div class="back-btn" id="closeSearch">  
+        <i class="fas fa-arrow-left"></i>  
+      </div>  
+      <img src="images/searchlogo.png" alt="Playonic Logo" class="search-logo">  
+      <div class="vertical-line-bar"></div>  
+      <input type="text" class="search-input" placeholder="Search games...">  
+      <i class="fas fa-search search-icon"></i>  
+    </div>  
+  </div>  
+  
+  <!-- Floating widget -->  
+  <div class="poki-widget">
+    <div class="logo-part">
+      <img src="images/playonic.png" alt="Logo">
+    </div>
+    <div class="horizontal-line"></div>
+    <div class="icon-part">
+      <div class="icon-box">
+       <a href="index.html">
+        <i class="fas fa-home"></i>
+      </div> </a>
+      <div class="vertical-line"></div>
+      <div class="icon-box">
+        <i class="fas fa-search search-icon-widget"></i>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+ 
+  
+  
+  
+  <!-- Game Cards -->  
+  <div class="container">  
+      
+      
+<div class="game-card">  
+  </div>  
+      
+      
+   
+   
+      
+  </div>  
+  
+  <!-- Desktop-only Info Panel -->
+<div class="desktop-banner-box">
+  <div class="game-banner-left">
+    <img src="banner-img" alt="" />
+  </div>
+  <div class="game-banner-center">
+    <h2>banner-tittle</h2>
+    <p>banner-dev</p>
+  </div>
+  <div class="game-banner-right">
+    <i class="fas fa-thumbs-up"></i>
+    <i class="fas fa-thumbs-down"></i>
+  </div>
+</div>
+  
+   <!-- White Box Title Next to Widget -->  
+<!-- White Box Title Next to Widget -->
+<div class="wrapper">
+ <div class="page-heading-box">
+  <div class="game-title-group">
+    <p id="pageHeading"></p>
+    <span class="game-dev-name"></span>
+  </div>
+</div>
+</div>
+
+<!-- Game Thumbnail with Play Button -->
+<div class="wrapper">
+  <div class="game-main-thumbnail">
+    <img id="main-thumb" src="" alt="">
+    <div class="play-overlay" id="playNowbtn" onclick="alert('Game will open!')">
+      <div style="text-align: center;">
+        <div style="background: white; color: #1e3c72; border-radius: 50%; padding: 12px 14px; display: inline-block;">
+          <i class="fas fa-play fa-lg"></i>
+        </div>
+        <div style="margin-top: 8px; font-size: 19px; font-weight: 600;">Play Now</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Suggested Games Section -->
+<div class="wrapper">
+  <div class="suggested-games">
+    <!-- All suggested game thumbnails inside this div -->
+ 
+ 
+    
+  </div>
+</div>
+  
+  
+  
+<!-- Description Section -->
+  <div class="description-section">
+    <div class="desc-header">
+      <div class="desc-title-box">
+        <p id="category-breadcrumb"></p>
+        <h1 class="desc-title" id="descTitle"></h1>
+        <p class="desc-developer" id="descDev"></p>
+        <img id="descIcon" class="desc-icon" src="" alt="">
+      </div>
+    </div>
+    <div class="desc-body">
+      <p id="descBody"></p>
+      <!-- static content jaise how-to-play, features list yahan aap aaage bhi rakh sakte ho -->
+      <ul id="featureList"></ul>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+   
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+<!-- 🔁 Swapped Wave + Footer -->
+<div style="position: relative; background: white;">
+  <!-- Wave (Black Now) -->
+  <div style="position: absolute; top: -1px; left: 0; width: 100%; overflow: hidden; line-height: 0;">
+    <svg viewBox="0 0 1200 100" preserveAspectRatio="none" style="display: block; width: 100%; height: 80px;">
+<path d="M0,0 C300,100 900,0 1200,100 L1200,0 L0,0 Z" fill="#000000"></path> <!-- Black wave -->
+    </svg>
+  </div>
+
+  <!-- Footer Content (White Background) -->
+  <footer style="padding: 60px 20px 30px; text-align: center; font-family: 'Segoe UI', sans-serif; background: white;">
+    <div style="margin-bottom: 15px;">
+      <img src="images/playonic.png" alt="Playonic Logo" style="height: 80px; ">
+      <p style="font-weight: bold; font-size: 18px; margin: 10px 0 0; color: #333;">Let the world play</p>
+    </div>
+
+    <!-- Footer Links -->
+       <div style="margin: 15px 0;">
+      <a href="About.html" style="margin: 0 15px; text-decoration: none; color: #333; font-weight: bold;">About</a>
+      <a href="privacy policy.html" style="margin: 0 15px; text-decoration: none; color: #333; font-weight: bold;">Privacy Policy</a>
+      <a href="contact.html" style="margin: 0 15px; text-decoration: none; color: #333; font-weight: bold;">Contact</a>
+    </div>
+
+    <p style="font-size: 14px; color: #888; margin-top: 20px;">
+      © 2025 Playonic | Crafted with ❤️ by Aryan
+    </p>
+  </footer>
+</div>
+
+<!-- Google Translate Script -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { pageLanguage: 'en' },
+      'google_translate_element'
+    );
+  }
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+ 
+ 
+  <!-- JavaScript footer -->
+<script>
+  (function () {
+    const searchIconWidget = document.querySelector('.search-icon-widget');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const closeSearch = document.getElementById('closeSearch');
+    const widget = document.querySelector('.poki-widget');
+    const searchInput = document.querySelector('.search-input');
+
+    const resultContainer = document.createElement('div');
+    resultContainer.style.padding = '10px 20px';
+    resultContainer.style.color = 'white';
+    if (searchOverlay) searchOverlay.appendChild(resultContainer);
+
+    let allGames = [];
+    let popularGames = [];
+
+    // ✅ JSON load
+    fetch("games.json")
+      .then(res => res.json())
+      .then(data => {
+        allGames = data;
+        updatePopularGames(); // first load
+      })
+      .catch(err => console.error("Error loading games.json", err));
+
+    // ✅ Play count save
+    function increasePlayCount(id) {
+      let playCounts = JSON.parse(localStorage.getItem('playCounts') || '{}');
+      playCounts[id] = (playCounts[id] || 0) + 1;
+      localStorage.setItem('playCounts', JSON.stringify(playCounts));
+      updatePopularGames();
+    }
+
+    // ✅ Recently Played save
+    function saveRecentlyPlayed(id) {
+      let game = allGames.find(g => g.id === id);
+      if (!game) return;
+
+      let recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+      recent = recent.filter(g => g.id !== id);
+      recent.unshift({ id: game.id, title: game.title, img: game.img });
+      if (recent.length > 50) recent.pop();
+
+      localStorage.setItem('recentlyPlayed', JSON.stringify(recent));
+      localStorage.setItem('selectedGameId', id); // ✅ yahi id view-page ke liye
+      increasePlayCount(id);
+    }
+
+    // ✅ Popular Games update (Top 10 by playCount)
+    function updatePopularGames() {
+      let playCounts = JSON.parse(localStorage.getItem('playCounts') || '{}');
+      popularGames = [...allGames].sort((a, b) => {
+        let countA = playCounts[a.id] || 0;
+        let countB = playCounts[b.id] || 0;
+        return countB - countA;
+      }).slice(0, 10);
+    }
+
+    // ✅ Render scroll section
+    function renderScrollSection(title, items) {
+      if (!resultContainer) return;
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `<h3 style="margin:10px 0;">${title}</h3>`;
+      const sc = document.createElement('div');
+      sc.className = 'scroll-container';
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'game-card-inline';
+        card.innerHTML = `<img src="${item.img}" alt="${item.title}" style="cursor:pointer;">`;
+
+        card.querySelector("img").addEventListener("click", () => {
+          saveRecentlyPlayed(item.id);
+          window.location.href = "view-page.html";
+        });
+
+        sc.appendChild(card);
+      });
+      wrapper.appendChild(sc);
+      resultContainer.appendChild(wrapper);
+    }
+
+    // ✅ Show default sections
+    function showDefaultSections() {
+      if (!resultContainer) return;
+      resultContainer.innerHTML = '';
+      const recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+      if (recent.length) renderScrollSection('Recently Playing', recent);
+      if (popularGames.length) renderScrollSection('Popular Games', popularGames);
+    }
+
+    // ✅ Search Overlay open
+    if (searchIconWidget) {
+      searchIconWidget.addEventListener('click', () => {
+        if (!searchOverlay || !widget) return;
+        searchOverlay.style.display = 'block';
+        widget.style.display = 'none';
+        setTimeout(() => searchInput && searchInput.focus(), 250);
+        showDefaultSections();
+      });
+    }
+
+    // ✅ Search Overlay close
+    if (closeSearch) {
+      closeSearch.addEventListener('click', () => {
+        if (!searchOverlay || !widget || !resultContainer) return;
+        searchOverlay.style.display = 'none';
+        widget.style.display = 'flex';
+        if (searchInput) searchInput.value = '';
+        resultContainer.innerHTML = '';
+      });
+    }
+
+    // ✅ Search system
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        if (!resultContainer) return;
+        const query = (searchInput.value || '').trim().toLowerCase();
+        resultContainer.innerHTML = '';
+
+        if (query === '') {
+          showDefaultSections();
+          return;
+        }
+
+        const matched = allGames.filter(g =>
+          (g.title && g.title.toLowerCase().includes(query)) ||
+          (g.description && g.description.toLowerCase().includes(query)) ||
+          (g.tags && g.tags.some(tag => tag.toLowerCase().includes(query)))
+        );
+
+        if (matched.length) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'scroll-container';
+          matched.forEach(game => {
+            const card = document.createElement('div');
+            card.className = 'game-card-inline';
+            card.innerHTML = `<img src="${game.img}" alt="${game.title}" style="cursor:pointer;">`;
+
+            card.querySelector("img").addEventListener("click", () => {
+              saveRecentlyPlayed(game.id);
+              window.location.href = "view-page.html";
+            });
+
+            wrapper.appendChild(card);
+          });
+          resultContainer.appendChild(wrapper);
+        } else {
+          resultContainer.innerHTML = `<p style="margin-top:10px;color:white">No games found</p>`;
+        }
+      });
+    }
+
+    // ✅ Home page ke games ko bhi save karo
+    document.querySelectorAll('.game-card a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const img = link.querySelector('img');
+        if (!img) return;
+        const game = allGames.find(g => g.img === img.getAttribute("src"));
+        if (game) {
+          saveRecentlyPlayed(game.id);
+        }
+      });
+    });
+
+  })();
+</script>
+  
+  
+  
+  
+ <!--- vp load -->
+ 
+<script>
+  (function() {
+  // Consistent key with lowercase 'd'
+  const gameID = localStorage.getItem('selectedGameId') || '3';
+
+  fetch('games.json')
+    .then(res => res.json())
+    .then(games => {
+      const game = games.find(g => g.id === gameID) || games[0];
+
+      // Desktop Banner
+      const bannerImg = document.querySelector('.desktop-banner-box .game-banner-left img');
+      const bannerTitle = document.querySelector('.desktop-banner-box .game-banner-center h2');
+      const bannerDev = document.querySelector('.desktop-banner-box .game-banner-center p');
+      bannerImg.src = game.img;
+      bannerImg.alt = game.title;
+      bannerTitle.textContent = game.title;
+      bannerDev.textContent = 'by ' + game.developer;
+
+      // Page Heading
+      document.getElementById('pageHeading').textContent = game.title;
+      const devName = document.querySelector('.game-dev-name');
+      devName.textContent = 'by ' + game.developer;
+
+      // Main Thumbnail
+      const mainThumb = document.getElementById('main-thumb');
+      mainThumb.src = game.img;
+      mainThumb.alt = game.title;
+
+      // Play Button
+      const playNowbtn = document.getElementById('playNowbtn');
+      playNowbtn.onclick = () => {
+        window.location.href = game.link; // Isse current tab me game khlega
+      };
+
+      // Description Section
+      document.getElementById('category-breadcrumb').textContent = `playonic > ${game.tags.join(' > ')} > ${game.title}`;
+      document.getElementById('descTitle').textContent = game.title;
+      document.getElementById('descDev').textContent = 'by ' + game.developer;
+      const descIcon = document.getElementById('descIcon');
+      descIcon.src = game.img;
+      descIcon.alt = game.title;
+      document.getElementById('descBody').innerHTML = game.description;
+
+      // Features (agar available ho to)
+      const featureList = document.getElementById('featureList');
+      if (featureList && Array.isArray(game.features)) {
+        featureList.innerHTML = '';
+        game.features.forEach(f => {
+          const li = document.createElement('li');
+          li.textContent = f;
+          featureList.appendChild(li);
+        });
+      }
+
+      // Suggested Games (filtered by category/tag)
+      const suggested = document.querySelector('.suggested-games');
+      if (suggested && Array.isArray(games)) {
+        suggested.innerHTML = '';
+
+        const currentTags = game.tags || [];
+
+        const relatedGames = games.filter(gm => {
+          if (gm.id === game.id) return false;
+          if (!gm.tags) return false;
+          return gm.tags.some(tag => currentTags.includes(tag));
+        });
+
+        relatedGames.slice(0, 27).forEach(sugGame => {
+          const div = document.createElement('div');
+          div.className = 'game-card';
+          div.innerHTML = `
+            <a href="view-page.html" data-id="${sugGame.id}">
+              <img src="${sugGame.img}" alt="${sugGame.title}" />
+            </a>
+          `;
+          suggested.appendChild(div);
+        });
+
+        // Add click event to suggested games links, save ID and redirect
+        suggested.querySelectorAll('a').forEach(aTag => {
+          aTag.addEventListener('click', e => {
+            e.preventDefault();
+            const id = aTag.getAttribute('data-id');
+            if (id) {
+              localStorage.setItem('selectedGameId', id); // lowercase 'd'
+              window.location.href = 'view-page.html';
+            }
+          });
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Error loading games.json: ", err);
+    });
+})();
+</script>
+
+ 
+  
+ 
+
+ <script src="games.js"></script>
+ <script src="games.json"></script>
+
+ 
+ 
+ 
+ 
+<!-- 🔹 Game Overlay (Iframe System) -->
+<!-- 🔹 Game Overlay -->
+<!-- ===== Game Overlay (paste once in view-page.html) ===== -->
+<div id="gameOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0d2b4a; z-index:9980;">
+  <iframe id="gameIframe" src="" allowfullscreen style="border:none; width:100vw; height:100vh; display:block;"></iframe>
+  
+  <!-- Back Button -->
+  <div id="floatingBackBtn" style="position:fixed; top:50px; left:-10px; z-index:10001; cursor:grab; user-select:none; display:flex; align-items:center; transition:top 0.1s ease-out;">
+    <div style="background:white; border-radius:12px; padding:6px 4px 6px 15px; box-shadow:0 4px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:3px; height:25px;">
+      <i class="fas fa-arrow-left" style="color:#00bfff; font-size:12px;"></i>
+      <img src="images/searchlogo.png" alt="Logo" style="height:24px; width:auto;">
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="iframe-container" id="gameContainer" style="display:none;">
+  <iframe id="gameFrame" data-src="yourgame.html" frameborder="0" allowfullscreen></iframe>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {  
+  const overlay = document.getElementById('gameOverlay');  
+  const iframe = document.getElementById('gameIframe');  
+  const backBtn = document.getElementById('floatingBackBtn');  
+  const playBtn = document.getElementById('playNowbtn'); 
+
+  let currentGameLink = null;
+
+  // Get the current game's link from localStorage and JSON  
+  fetch('games.json')  
+    .then(res => res.json())  
+    .then(games => {  
+      const gameID = localStorage.getItem('selectedGameId');  
+      const game = games.find(g => g.id == gameID);  
+      if (game) currentGameLink = game.link;  
+    });  
+
+  // Play button event  
+  if (playBtn) {  
+    playBtn.addEventListener('click', async function(e) {  
+      e.preventDefault();  
+      e.stopImmediatePropagation();  
+      e.stopPropagation();  
+
+      if (currentGameLink) {  
+        overlay.style.display = 'block';  
+        document.body.style.overflow = 'hidden';  
+        setTimeout(() => {  
+          iframe.src = currentGameLink;  
+        }, 120);  
+
+        // FULLSCREEN request WITH fallback  
+        try {
+          if (overlay.requestFullscreen) {
+            await overlay.requestFullscreen();
+          } else if (overlay.webkitRequestFullscreen) { 
+            await overlay.webkitRequestFullscreen();
+          } else if (overlay.msRequestFullscreen) { 
+            await overlay.msRequestFullscreen();
+          } else {
+            // Fullscreen not supported: do nothing, still show overlay  
+          }
+        } catch(e) {
+          // Ignore fullscreen errors. Overlay still visible.
+        }
+
+      } else {  
+        alert("Game link not found!");  
+      }  
+      return false;  
+    }, true);  
+  }  
+
+  // Back button: close overlay and clear iframe  
+  backBtn.addEventListener('click', async function() {  
+    // Exit fullscreen if active  
+    if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        await document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        await document.msExitFullscreen();
+      }
+    }
+    iframe.src = '';  
+    overlay.style.display = 'none';  
+    document.body.style.overflow = '';  
+  });  
+
+  // Vertical drag for back button  
+  let isDragging = false, startY = 0, startTop = 0;  
+  function startDrag(y) { isDragging = true; startY = y; startTop = parseInt(window.getComputedStyle(backBtn).top,10);}  
+  function drag(y) {  
+    if (!isDragging) return;  
+    let newTop = startTop + (y - startY);  
+    const maxTop = window.innerHeight - backBtn.offsetHeight - 10;  
+    if (newTop < 10) newTop = 10;  
+    if (newTop > maxTop) newTop = maxTop;  
+    backBtn.style.top = newTop + 'px';  
+  }  
+  function stopDrag() { isDragging = false; }  
+  backBtn.addEventListener('mousedown', e => startDrag(e.clientY));  
+  document.addEventListener('mousemove', e => drag(e.clientY));  
+  document.addEventListener('mouseup', stopDrag);  
+  backBtn.addEventListener('touchstart', e => startDrag(e.touches[0].clientY));  
+  document.addEventListener('touchmove', e => drag(e.touches[0].clientY));  
+  document.addEventListener('touchend', stopDrag);  
+});
+</script>
+
+ <!---- loading lazy--->
+ 
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const iframes = document.querySelectorAll("iframe[data-src]");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.src = entry.target.dataset.src;
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+    iframes.forEach(iframe => observer.observe(iframe));
+  });
+</script>
+ 
+   
+</body>  
+</html>  
+  
