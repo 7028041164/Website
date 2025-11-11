@@ -135,7 +135,7 @@
         
       <div class="game-card">
       <a href="view-page.html" data-id="57">
-         <img src="images/SurvivalIsland.webp" alt="build,Adventure,Evolution,Survive" loading="lazy">
+         <img src="images/LostAdventure.webp" alt="build,Adventure,Evolution,casual,animal, ,wolf, water,zombie android" loading="lazy">
        </a>
      </div>
           <div class="game-card">
@@ -480,7 +480,7 @@
     
       <div class="game-card">
        <a href="view-page.html" data-id="52">
-         <img src="images/NinaDetective.webp" alt="Makeup, Dress up, Girls" loading="lazy">
+         <img src="images/Madscientist.webp" alt="Adventure,mad, science,scientist," loading="lazy">
        </a>
      </div>
     
@@ -492,7 +492,7 @@
     
       <div class="game-card">
       <a href="view-page.html" data-id="54">
-         <img src="images/3dFreeKickWorldCup.webp" alt="Skill, Sport, Arcade, Free, kick, world, cup, 3dFreeKickWorldCup," loading="lazy">
+         <img src="images/StickmanRescue.webp" alt="Stickman,rescue, draw," loading="lazy">
        </a>
      </div>
     
@@ -614,170 +614,194 @@
  
   <!-- JavaScript -->
 <script>
-  (function () {
-    const searchIconWidget = document.querySelector('.search-icon-widget');
-    const searchOverlay = document.getElementById('searchOverlay');
-    const closeSearch = document.getElementById('closeSearch');
-    const widget = document.querySelector('.poki-widget');
-    const searchInput = document.querySelector('.search-input');
+(function () {
+  const searchIconWidget = document.querySelector('.search-icon-widget');
+  const searchOverlay = document.getElementById('searchOverlay');
+  const closeSearch = document.getElementById('closeSearch');
+  const widget = document.querySelector('.poki-widget');
+  const searchInput = document.querySelector('.search-input');
 
-    const resultContainer = document.createElement('div');
-    resultContainer.style.padding = '10px 20px';
-    resultContainer.style.color = 'white';
-    if (searchOverlay) searchOverlay.appendChild(resultContainer);
+  const resultContainer = document.createElement('div');
+  resultContainer.style.padding = '10px 20px';
+  resultContainer.style.color = 'white';
+  if (searchOverlay) searchOverlay.appendChild(resultContainer);
 
-    let allGames = [];
-    let popularGames = [];
+  let allGames = [];
+  let popularGames = [];
 
-    // ✅ JSON load
-    fetch("games.json")
-      .then(res => res.json())
-      .then(data => {
-        allGames = data;
-        updatePopularGames(); // first load
-      })
-      .catch(err => console.error("Error loading games.json", err));
+  // ✅ JSON load
+  fetch("games.json")
+    .then(res => res.json())
+    .then(data => {
+      allGames = data;
+      updatePopularGames(); // first load
+      autoUpdateRecentlyPlayed(); // 🔁 start auto update watcher
+    })
+    .catch(err => console.error("Error loading games.json", err));
 
-    // ✅ Play count save
-    function increasePlayCount(id) {
-      let playCounts = JSON.parse(localStorage.getItem('playCounts') || '{}');
-      playCounts[id] = (playCounts[id] || 0) + 1;
-      localStorage.setItem('playCounts', JSON.stringify(playCounts));
-      updatePopularGames();
-    }
+  // ✅ Play count save
+  function increasePlayCount(id) {
+    let playCounts = JSON.parse(localStorage.getItem('playCounts') || '{}');
+    playCounts[id] = (playCounts[id] || 0) + 1;
+    localStorage.setItem('playCounts', JSON.stringify(playCounts));
+    updatePopularGames();
+  }
 
-    // ✅ Recently Played save
-    function saveRecentlyPlayed(id) {
-      let game = allGames.find(g => g.id === id);
-      if (!game) return;
+  // ✅ Recently Played save
+  function saveRecentlyPlayed(id) {
+    let game = allGames.find(g => g.id === id);
+    if (!game) return;
 
-      let recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
-      recent = recent.filter(g => g.id !== id);
-      recent.unshift({ id: game.id, title: game.title, img: game.img });
-      if (recent.length > 50) recent.pop();
+    let recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+    recent = recent.filter(g => g.id !== id);
+    recent.unshift({ id: game.id, title: game.title, img: game.img });
 
-      localStorage.setItem('recentlyPlayed', JSON.stringify(recent));
-      localStorage.setItem('selectedGameId', id); // ✅ yahi id view-page ke liye
-      increasePlayCount(id);
-    }
+    // ✅ limit only 20
+    if (recent.length > 20) recent = recent.slice(0, 20);
 
-    // ✅ Popular Games update (Top 10 by playCount)
-    function updatePopularGames() {
-      let playCounts = JSON.parse(localStorage.getItem('playCounts') || '{}');
-      popularGames = [...allGames].sort((a, b) => {
-        let countA = playCounts[a.id] || 0;
-        let countB = playCounts[b.id] || 0;
-        return countB - countA;
-      }).slice(0, 10);
-    }
+    localStorage.setItem('recentlyPlayed', JSON.stringify(recent));
+    localStorage.setItem('selectedGameId', id);
+    increasePlayCount(id);
+    showDefaultSections();
+  }
 
-    // ✅ Render scroll section
-    function renderScrollSection(title, items) {
-      if (!resultContainer) return;
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = `<h3 style="margin:10px 0;">${title}</h3>`;
-      const sc = document.createElement('div');
-      sc.className = 'scroll-container';
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'game-card-inline';
-        card.innerHTML = `<img src="${item.img}" alt="${item.title}" style="cursor:pointer;">`;
+  // ✅ Popular Games update (Top 10 by playCount)
+  function updatePopularGames() {
+    let playCounts = JSON.parse(localStorage.getItem('playCounts') || '{}');
+    popularGames = [...allGames].sort((a, b) => {
+      let countA = playCounts[a.id] || 0;
+      let countB = playCounts[b.id] || 0;
+      return countB - countA;
+    }).slice(0, 10);
+  }
 
-        card.querySelector("img").addEventListener("click", () => {
-          saveRecentlyPlayed(item.id);
-          window.location.href = "view-page.html";
-        });
+  // ✅ Render scroll section
+  function renderScrollSection(title, items) {
+    if (!resultContainer) return;
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `<h3 style="margin:10px 0;font-size:18px;">${title}</h3>`;
+    const sc = document.createElement('div');
+    sc.className = 'scroll-container';
 
-        sc.appendChild(card);
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'game-card-inline';
+      card.innerHTML = `<img src="${item.img}" alt="${item.title}" style="cursor:pointer;">`;
+
+      card.querySelector("img").addEventListener("click", () => {
+        saveRecentlyPlayed(item.id);
+        window.location.href = "view-page.html";
       });
-      wrapper.appendChild(sc);
-      resultContainer.appendChild(wrapper);
-    }
 
-    // ✅ Show default sections
-    function showDefaultSections() {
-      if (!resultContainer) return;
-      resultContainer.innerHTML = '';
-      const recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
-      if (recent.length) renderScrollSection('Recently Playing', recent);
-      if (popularGames.length) renderScrollSection('Popular Games', popularGames);
-    }
-
-    // ✅ Search Overlay open
-    if (searchIconWidget) {
-      searchIconWidget.addEventListener('click', () => {
-        if (!searchOverlay || !widget) return;
-        searchOverlay.style.display = 'block';
-        widget.style.display = 'none';
-        setTimeout(() => searchInput && searchInput.focus(), 250);
-        showDefaultSections();
-      });
-    }
-
-    // ✅ Search Overlay close
-    if (closeSearch) {
-      closeSearch.addEventListener('click', () => {
-        if (!searchOverlay || !widget || !resultContainer) return;
-        searchOverlay.style.display = 'none';
-        widget.style.display = 'flex';
-        if (searchInput) searchInput.value = '';
-        resultContainer.innerHTML = '';
-      });
-    }
-
-    // ✅ Search system
-    if (searchInput) {
-      searchInput.addEventListener('input', () => {
-        if (!resultContainer) return;
-        const query = (searchInput.value || '').trim().toLowerCase();
-        resultContainer.innerHTML = '';
-
-        if (query === '') {
-          showDefaultSections();
-          return;
-        }
-
-        const matched = allGames.filter(g =>
-          (g.title && g.title.toLowerCase().includes(query)) ||
-          (g.description && g.description.toLowerCase().includes(query)) ||
-          (g.tags && g.tags.some(tag => tag.toLowerCase().includes(query)))
-        );
-
-        if (matched.length) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'scroll-container';
-          matched.forEach(game => {
-            const card = document.createElement('div');
-            card.className = 'game-card-inline';
-            card.innerHTML = `<img src="${game.img}" alt="${game.title}" style="cursor:pointer;">`;
-
-            card.querySelector("img").addEventListener("click", () => {
-              saveRecentlyPlayed(game.id);
-              window.location.href = "view-page.html";
-            });
-
-            wrapper.appendChild(card);
-          });
-          resultContainer.appendChild(wrapper);
-        } else {
-          resultContainer.innerHTML = `<p style="margin-top:10px;color:white">No games found</p>`;
-        }
-      });
-    }
-
-    // ✅ Home page ke games ko bhi save karo
-    document.querySelectorAll('.game-card a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const img = link.querySelector('img');
-        if (!img) return;
-        const game = allGames.find(g => g.img === img.getAttribute("src"));
-        if (game) {
-          saveRecentlyPlayed(game.id);
-        }
-      });
+      sc.appendChild(card);
     });
 
-  })();
+    wrapper.appendChild(sc);
+    resultContainer.appendChild(wrapper);
+  }
+
+  // ✅ Show default sections
+  function showDefaultSections() {
+    if (!resultContainer) return;
+    resultContainer.innerHTML = '';
+    let recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+
+    // ✅ limit only 20 and auto-clean missing games
+    recent = recent
+      .filter(r => allGames.some(g => g.id === r.id))
+      .slice(0, 20);
+
+    if (recent.length) renderScrollSection('Recently Playing', recent);
+    if (popularGames.length) renderScrollSection('Popular Games', popularGames);
+  }
+
+  // ✅ Auto update system (check every 5s)
+  function autoUpdateRecentlyPlayed() {
+    setInterval(() => {
+      const recent = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+      const validRecent = recent.filter(r => allGames.some(g => g.id === r.id));
+      if (JSON.stringify(recent) !== JSON.stringify(validRecent)) {
+        localStorage.setItem('recentlyPlayed', JSON.stringify(validRecent));
+        showDefaultSections();
+      }
+    }, 5000);
+  }
+
+  // ✅ Search Overlay open
+  if (searchIconWidget) {
+    searchIconWidget.addEventListener('click', () => {
+      if (!searchOverlay || !widget) return;
+      searchOverlay.style.display = 'block';
+      widget.style.display = 'none';
+      setTimeout(() => searchInput && searchInput.focus(), 250);
+      showDefaultSections();
+    });
+  }
+
+  // ✅ Search Overlay close
+  if (closeSearch) {
+    closeSearch.addEventListener('click', () => {
+      if (!searchOverlay || !widget || !resultContainer) return;
+      searchOverlay.style.display = 'none';
+      widget.style.display = 'flex';
+      if (searchInput) searchInput.value = '';
+      resultContainer.innerHTML = '';
+    });
+  }
+
+  // ✅ Search system
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      if (!resultContainer) return;
+      const query = (searchInput.value || '').trim().toLowerCase();
+      resultContainer.innerHTML = '';
+
+      if (query === '') {
+        showDefaultSections();
+        return;
+      }
+
+      const matched = allGames.filter(g =>
+        (g.title && g.title.toLowerCase().includes(query)) ||
+        (g.description && g.description.toLowerCase().includes(query)) ||
+        (g.tags && g.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+
+      if (matched.length) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'scroll-container';
+        matched.forEach(game => {
+          const card = document.createElement('div');
+          card.className = 'game-card-inline';
+          card.innerHTML = `<img src="${game.img}" alt="${game.title}" style="cursor:pointer;">`;
+
+          card.querySelector("img").addEventListener("click", () => {
+            saveRecentlyPlayed(game.id);
+            window.location.href = "view-page.html";
+          });
+
+          wrapper.appendChild(card);
+        });
+        resultContainer.appendChild(wrapper);
+      } else {
+        resultContainer.innerHTML = `<p style="margin-top:10px;color:white">No games found</p>`;
+      }
+    });
+  }
+
+  // ✅ Home page ke games ko bhi save karo
+  document.querySelectorAll('.game-card a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const img = link.querySelector('img');
+      if (!img) return;
+      const game = allGames.find(g => g.img === img.getAttribute("src"));
+      if (game) {
+        saveRecentlyPlayed(game.id);
+      }
+    });
+  });
+
+})();
 </script>
   
   
